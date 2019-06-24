@@ -53,10 +53,32 @@ bot.on('message', (msg) => {
         let cmdName = args.shift()
         switch (cmdName) {
             case "price":
-                price().then(function (result) {
-                    msg.channel.send(result.id)
+                let name = args.join(' ')
+                price(name).then(function (result) {
+                    return new Promise(function (resolve, reject) {
+                        let payload = {
+                            uri: `www.pathofexile.com/api/trade/fetch/${result.result.slice(0, 5).join()}`,
+                            method: 'GET',
+                            qs: { query: result.id },
+                            json: true
+                        }
+                        Request(payload, (err, response, body) => {
+                            if (err) {
+                                reject(err)
+                            } else if (response.statusCode != 200) {
+                                reject(`Error fetching results, status code ${response.statusCode} ${response.statusMessage}`)
+                            } else {
+                                console.log(body)
+                                resolve(body)
+                            }
+                        })
+                    })
+                }).then(function (resObj) {
+                    msg.channel.send(`Found ${resObj.result.length} results for ${name}`)
+                    console.log(resObj)
                 }).catch(function (err) {
-                    msg.channel.send(err)
+                    msg.channel.send(`Error retrieving search data for ${name}: ${err}`)
+                    console.log(err)
                 })
                 break
             default:

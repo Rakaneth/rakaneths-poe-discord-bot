@@ -1,15 +1,17 @@
 {
-  "name": "poe-price-check-bot",
-  "version": "0.0.1",
-  "description": "A Discord bot that allows quick price checks in PoE.",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Rakaneth",
-  "license": "ISC",
-  "dependencies": {
-    "discord.js": "^11.5.1",
-    "request": "^2.88.0"
-  }
+    "name": "poe-price-check-bot",
+    "version": "0.0.1",
+    "description": "A Discord bot that allows quick price checks in PoE.",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js"
+    },
+    "author": "Rakaneth",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^11.5.1",
+        "qs": "^6.7.0",
+        "request": "^2.88.0"
+    }
 }
