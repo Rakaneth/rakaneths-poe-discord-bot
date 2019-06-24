@@ -46,7 +46,7 @@ bot.on('ready', () => {
 })
 
 bot.on('message', (msg) => {
-    let cmdRegex = /!(.*)/g
+    let cmdRegex = /^!(.*)/g
     let cmdParse = cmdRegex.exec(msg.content)
     if (cmdParse) {
         let args = cmdParse[1].split(/\s+/)
@@ -57,9 +57,9 @@ bot.on('message', (msg) => {
                 price(name).then(function (result) {
                     return new Promise(function (resolve, reject) {
                         let payload = {
-                            uri: `www.pathofexile.com/api/trade/fetch/${result.result.slice(0, 5).join()}`,
+                            baseUrl: 'https://www.pathofexile.com/api/trade/fetch',
+                            uri: `${result.result.slice(0, 10).join()}?query=${result.id}`,
                             method: 'GET',
-                            qs: { query: result.id },
                             json: true
                         }
                         Request(payload, (err, response, body) => {
@@ -68,7 +68,7 @@ bot.on('message', (msg) => {
                             } else if (response.statusCode != 200) {
                                 reject(`Error fetching results, status code ${response.statusCode} ${response.statusMessage}`)
                             } else {
-                                console.log(body)
+                                //console.log(body)
                                 resolve(body)
                             }
                         })
@@ -76,6 +76,14 @@ bot.on('message', (msg) => {
                 }).then(function (resObj) {
                     msg.channel.send(`Found ${resObj.result.length} results for ${name}`)
                     console.log(resObj)
+                    let priceText = "```\n"
+                    for (let listing of resObj.result) {
+                        let acct = listing.listing.account.name.padEnd(50, '.')
+                        let price = `${listing.listing.price.amount} ${listing.listing.price.currency}`
+                        priceText += `${acct}${price}\n`
+                    }
+                    priceText += "```"
+                    msg.channel.send(priceText)
                 }).catch(function (err) {
                     msg.channel.send(`Error retrieving search data for ${name}: ${err}`)
                     console.log(err)
