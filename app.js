@@ -48,7 +48,7 @@ bot.on('ready', () => {
 bot.on('message', (msg) => {
     let cmdRegex = /^!(.*)/g
     let cmdParse = cmdRegex.exec(msg.content)
-    if (cmdParse) {
+    if (cmdParse && msg.channel.name == 'poe-price-checks') {
         let args = cmdParse[1].split(/\s+/)
         let cmdName = args.shift()
         switch (cmdName) {
